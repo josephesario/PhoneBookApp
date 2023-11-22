@@ -1,8 +1,22 @@
-var builder = WebApplication.CreateBuilder(args);
+using dbContext.Models;
+using Microsoft.EntityFrameworkCore;
 
+var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 builder.Services.AddControllersWithViews();
+
+// Database Connection
+var connectionString = builder.Configuration.GetConnectionString("PhoneBookDbContext");
+builder.Services.AddDbContext<PhoneBookDbContext>(options => options.UseSqlServer(connectionString));
+
+// Scoped lifetime for LendLinkDbContext
+builder.Services.AddScoped<PhoneBookDbContext>();
 
 var app = builder.Build();
 
