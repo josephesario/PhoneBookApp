@@ -7,8 +7,7 @@ using Microsoft.EntityFrameworkCore;
 namespace dbContext.Models;
 
 [Table("t_Book")]
-[Index("PhoneNumber", Name = "UQ__t_Book__17A35CA426264E8C", IsUnique = true)]
-[Index("Title", Name = "UQ__t_Book__2CB664DCEAFC2DEC", IsUnique = true)]
+[Index("PhoneNumber", Name = "UQ__t_Book__17A35CA4B1806A93", IsUnique = true)]
 public partial class TBook
 {
     [Key]
@@ -16,7 +15,10 @@ public partial class TBook
     public Guid BookId { get; set; }
 
     [StringLength(120)]
-    public string Title { get; set; } = null!;
+    public string FistName { get; set; } = null!;
+
+    [StringLength(120)]
+    public string LastName { get; set; } = null!;
 
     [Column("Phone_Number")]
     [StringLength(50)]

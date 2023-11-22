@@ -5,14 +5,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 public partial class HBook
 {
-    [Key]
-    [Column("Book_Id")]
-    [Required]
-    public Guid BookId { get; set; }
 
     [Required]
     [StringLength(120)]
-    public string Title { get; set; } = null!;
+    public string FistName { get; set; } = null!;
+
+    [Required]
+    [StringLength(120)]
+    public string LastName { get; set; } = null!;
 
     [Required]
     [Column("Phone_Number")]

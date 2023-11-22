@@ -33,12 +33,11 @@ public partial class PhoneBookDbContext : DbContext
         }
     }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<TBook>(entity =>
         {
-            entity.HasKey(e => e.BookId).HasName("PK__t_Book__C223F3B4E152A2C1");
+            entity.HasKey(e => e.BookId).HasName("PK__t_Book__C223F3B482F39C77");
 
             entity.Property(e => e.BookId).HasDefaultValueSql("(newid())");
         });

@@ -1,7 +1,9 @@
 ﻿using dbContext.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace PhoneBookApp.Controllers
 {
@@ -17,8 +19,64 @@ namespace PhoneBookApp.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpPost("AddPhoneBook")]
+        [HttpGet("GetAllPhoneBooks")]
+        public async Task<ActionResult<TBook>> GetAllPhoneBooks()
+        {
+            using var transaction = _dbContext.Database.BeginTransaction();
 
+            try
+            {
+                var output = await _dbContext.TBooks.ToListAsync();
+                if (output.Count > 0)
+                {
+                    transaction.Commit();
+                    return Ok(output);
+                }
+                else
+                {
+                    transaction.Rollback();
+                    return NoContent();
+                }
+
+            }catch(Exception ex)
+            {
+                transaction.Rollback();
+                return BadRequest($"Exeption: Date {DateTime.Now} - Exeption Info - {ex}");
+            }
+        }
+
+       
+        [HttpGet("GetPhoneBookBySearch/{search}")]
+        public async Task<ActionResult<TBook>> GetPhoneBookBySearch([Required] string search)
+        {
+            using var transaction = _dbContext.Database.BeginTransaction();
+
+            try
+            {
+
+                var output = await _dbContext.TBooks.Where(e => e.FistName.Contains(search) || e.LastName.Contains(search) || e.PhoneNumber.Contains(search)).ToListAsync();
+
+                if (output.Count > 0)
+                {
+                    transaction.Commit();
+                    return Ok(output);
+                }
+                else
+                {
+                    transaction.Rollback();
+                    return NoContent();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return BadRequest($"Exeption: Date {DateTime.Now} - Exeption Info - {ex}");
+            }
+        }
+
+
+        [HttpPost("AddPhoneBook")]
         public async Task<IActionResult> AddPhoneBook(HBook hBook)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
@@ -33,7 +91,8 @@ namespace PhoneBookApp.Controllers
                     HBook_Validation hBook_Validation = new()
                     {
                         PhoneNumber = hBook.PhoneNumber,
-                        Title = hBook.Title
+                        FistName = hBook.FistName,
+                        LastName = hBook.LastName
                     };
 
                     bool accountExists = await BookAlreadyExistsAsync(hBook_Validation);
@@ -42,10 +101,10 @@ namespace PhoneBookApp.Controllers
 
                     TBook book = new()
                     {
-                        BookId = hBook.BookId,
                         PhoneNumber = hBook.PhoneNumber,
                         RegistrationDate = DateTime.Now,
-                        Title = hBook.Title,
+                        FistName = hBook.FistName,
+                        LastName = hBook.LastName,
 
                     };
 
@@ -81,6 +140,7 @@ namespace PhoneBookApp.Controllers
         }
 
 
+
         [HttpPatch("UpdatePhoneNumberBy/{phoneNumber}")]
         public async Task<ActionResult<TBook>> UpdatePhoneBook_Title(string phoneNumber , HBookTitle Title)
         {
@@ -94,7 +154,7 @@ namespace PhoneBookApp.Controllers
                 if (output != null)
                 {
 
-                    bool status0 = await BookTitleAlreadyExistsAsync(Title.Title);
+                    bool status0 = await BookFullNameAlreadyExistsAsync(Title.FistName,Title.LastName);
                     bool status1 = await BookAlPhonereadyExistsAsync(phoneNumber);
 
                     if (status1)
@@ -111,7 +171,9 @@ namespace PhoneBookApp.Controllers
                         return NotFound();
                     }
 
-                    output.Title = Title.Title;
+                    output.FistName = Title.FistName;
+                    output.LastName = Title.LastName;
+
                     var output1 = _dbContext.SaveChanges();
 
                     if (output1 > 0) { 
@@ -139,18 +201,20 @@ namespace PhoneBookApp.Controllers
             }
         }
 
-        [HttpPatch("UpdatePhoneNumberBy/{title}")]
-        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string title, HBookPhone Phone)
+
+
+        [HttpPatch("UpdatePhoneNumberBy/{FistName}/{LastName}")]
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string FistName,string LastName, HBookPhone Phone)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try { 
 
-                var output = await _dbContext.TBooks.Where(e=>e.Title.Equals(title)).FirstOrDefaultAsync();
+                var output = await _dbContext.TBooks.Where(e=>e.FistName.Equals(FistName) && e.LastName.Equals(LastName)).FirstOrDefaultAsync();
                 
                 if(output != null) {
 
 
-                    bool status0  = await BookTitleAlreadyExistsAsync(title);
+                    bool status0  = await BookFullNameAlreadyExistsAsync(FistName, LastName);
                     bool status1 = await BookAlPhonereadyExistsAsync(Phone.PhoneNumber);
 
                     if (status0)
@@ -201,14 +265,14 @@ namespace PhoneBookApp.Controllers
         public async Task<bool> BookAlreadyExistsAsync(HBook_Validation book_Validation)
         {
 
-            var output = await _dbContext.TBooks.AnyAsync(e => e.Title.Equals(book_Validation.Title) || e.PhoneNumber.Equals(book_Validation.PhoneNumber));
+            var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(book_Validation.FistName) && e.LastName.Equals(book_Validation.LastName) || e.PhoneNumber.Equals(book_Validation.PhoneNumber));
             return output;
         }
 
-        public async Task<bool> BookTitleAlreadyExistsAsync(string  title)
+        public async Task<bool> BookFullNameAlreadyExistsAsync(string  FistName, string LastName)
         {
 
-            var output = await _dbContext.TBooks.AnyAsync(e => e.Title.Equals(title));
+            var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(FistName) && e.LastName.Equals(LastName));
             return output;
         }
 
