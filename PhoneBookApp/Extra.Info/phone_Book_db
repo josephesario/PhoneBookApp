@@ -15,79 +15,12 @@ use phone_book_app;
 
 go
 
-CREATE TABLE t_User_Details
-(
-
-   user_d_id uniqueidentifier primary key default newid(),
-   user_d_email nvarchar(120) unique not null,
-   user_d_password varchar(max) not null,
-   Registration_Date datetime not null,
-
-);
-
-go
-
 CREATE TABLE t_Book
 (
    Book_Id uniqueidentifier primary key default newid(),
-   Title nvarchar(120) not null unique,
+   FistName nvarchar(120) not null,
+   LastName nvarchar(120) not null,
    Phone_Number nvarchar(50) unique not null,
    Registration_Date datetime not null,
-   Book_Added_By uniqueidentifier not null,
-
-   Constraint[fk_t_Book_and_t_User_Details] foreign key (Book_Added_By) references t_User_Details(user_d_id)
 
 );
-
-go
-
-CREATE TABLE t_Book_Audit
-(
-    Book_Audit uniqueidentifier primary key default newid(),
-	Book_Id uniqueidentifier not null,
-    action_performed_by uniqueidentifier not null,
-    Action_Comment nvarchar(100) not null,
-    Action_Date datetime not null,
-
-    Constraint[fk_t_Book_Audit_and_t_User_Details] foreign key (action_performed_by) references t_User_Details(user_d_id),
-	Constraint[fk_Book_Audit_and_t_User_Details] foreign key(Book_Id) references t_Book(Book_Id)
-
-);
-
-go
-
-CREATE TABLE t_Login_Audit
-(
-    login_audit_id uniqueidentifier primary key default newid(),
-	Audit_login_user_id uniqueidentifier not null,
-    Action_Comment nvarchar(100) not null,
-    Audit_Date datetime not null,
-
-    Constraint[fk_t_Login_Audit_Audit_and_t_User_Details] foreign key (Audit_login_user_id) references t_User_Details(user_d_id)
-
-);
-
-go
-
-CREATE TABLE t_Login_Audit_users
-(
-    login_audit_id uniqueidentifier primary key default newid(),
-	Audit_login_user_id uniqueidentifier not null,
-    Action_Comment nvarchar(100) not null,
-    Audit_Date datetime not null,
-
-    Constraint[fk_t_Login_Audit_Users_and_t_User_Details] foreign key (Audit_login_user_id) references t_User_Details(user_d_id)
-
-);
-
-go
-
-CREATE TABLE t_ExceptionLog
-(
-    LogId uniqueidentifier primary key DEFAULT NEWID(),
-    Timestamp DATETIMEOFFSET NOT NULL,
-    Message NVARCHAR(255) NOT NULL,
-    Exception NVARCHAR(MAX) NOT NULL,
-);
-
-

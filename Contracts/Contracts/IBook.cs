@@ -14,7 +14,7 @@ namespace Contracts.Contracts
          Task<ActionResult<TBook>> GetAllPhoneBooks();
          Task<ActionResult<TBook>> GetPhoneBookBySearch([Required] string search);
          Task<IActionResult> AddPhoneBook(HBook hBook);
-         Task<ActionResult<TBook>> UpdatePhoneBook_Title(string phoneNumber, HBookTitle Title);
+         Task<ActionResult<TBook>> UpdatePhoneNumberBy(string phoneNumber, HBookTitle Title);
          Task<ActionResult<TBook>> UpdatePhoneNumberBy(string FistName, string LastName, HBookPhone Phone);
 
 

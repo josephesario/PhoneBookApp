@@ -2,20 +2,22 @@
 using dbContext.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace PhoneBookApp.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
-    public class BookController : ControllerBase, IBook
+    public class PhoneBookController : ControllerBase, IBook
     {
 
         private readonly PhoneBookDbContext _dbContext;
 
-        public BookController(PhoneBookDbContext dbContext)
+        public PhoneBookController(PhoneBookDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -98,6 +100,8 @@ namespace PhoneBookApp.Controllers
 
                     bool accountExists = await BookAlreadyExistsAsync(hBook_Validation);
 
+                    if (accountExists)
+                        return Conflict("Contact Already Exist");
 
 
                     TBook book = new()
@@ -140,7 +144,7 @@ namespace PhoneBookApp.Controllers
 
 
         [HttpPatch("UpdatePhoneNumberBy/{phoneNumber}")]
-        public async Task<ActionResult<TBook>> UpdatePhoneBook_Title(string phoneNumber , HBookTitle Title)
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string phoneNumber , HBookTitle Title)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
@@ -258,23 +262,52 @@ namespace PhoneBookApp.Controllers
             }
         }
 
+        [HttpDelete("DeleteByPhoneNumber/{phoneNumber}")]
+        public async Task<ActionResult> Delete([Required][RegularExpression(@"^\d{10}$")] string phoneNumber)
+        {
+            
+            using var transaction = _dbContext.Database.BeginTransaction();
+            try
+            {
+                var output0 = await _dbContext.TBooks.SingleOrDefaultAsync(e => e.PhoneNumber.Equals(phoneNumber));
+
+                if (output0 != null)
+                {
+                    _dbContext.TBooks.Remove(output0);
+                    await _dbContext.SaveChangesAsync(); // Save changes before committing the transaction
+                    transaction.Commit();
+                    return Ok("Contact Deleted Successfully");
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return BadRequest($"Exception: Date {DateTime.Now} - Exception Info - {ex}");
+            }
 
 
-        public async Task<bool> BookAlreadyExistsAsync(HBook_Validation book_Validation)
+        }
+
+
+        private async Task<bool> BookAlreadyExistsAsync(HBook_Validation book_Validation)
         {
 
             var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(book_Validation.FistName) && e.LastName.Equals(book_Validation.LastName) || e.PhoneNumber.Equals(book_Validation.PhoneNumber));
             return output;
         }
 
-        public async Task<bool> BookFullNameAlreadyExistsAsync(string  FistName, string LastName)
+        private async Task<bool> BookFullNameAlreadyExistsAsync(string  FistName, string LastName)
         {
 
             var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(FistName) && e.LastName.Equals(LastName));
             return output;
         }
 
-        public async Task<bool> BookAlPhonereadyExistsAsync(string phoneNumber)
+        private async Task<bool> BookAlPhonereadyExistsAsync(string phoneNumber)
         {
 
             var output = await _dbContext.TBooks.AnyAsync(e => e.PhoneNumber.Equals(phoneNumber));
