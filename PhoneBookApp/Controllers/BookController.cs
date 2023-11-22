@@ -160,7 +160,7 @@ namespace PhoneBookApp.Controllers
                         if (status0)
                         {
                             transaction.Rollback();
-                            return Conflict("Title Already Exist, Use A different Title!!");
+                            return Conflict("This Contact Already Exist, Use A different Title!!");
                         }
                     }
                     else
