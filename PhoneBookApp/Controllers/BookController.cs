@@ -1,4 +1,5 @@
-﻿using dbContext.Models;
+﻿using Contracts.Contracts;
+using dbContext.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +10,7 @@ namespace PhoneBookApp.Controllers
 {
     [ApiController]
     [Route("api/[Controller]")]
-    public class BookController : ControllerBase
+    public class BookController : ControllerBase, IBook
     {
 
         private readonly PhoneBookDbContext _dbContext;
@@ -135,10 +136,7 @@ namespace PhoneBookApp.Controllers
                 return BadRequest($"Exeption: Date {DateTime.Now} - Exeption Info - {ex}");
             }
 
-
-
         }
-
 
 
         [HttpPatch("UpdatePhoneNumberBy/{phoneNumber}")]
