@@ -16,6 +16,8 @@ public partial class PhoneBookDbContext : DbContext
     {
     }
 
+    public virtual DbSet<TBook> TBooks { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -31,8 +33,16 @@ public partial class PhoneBookDbContext : DbContext
         }
     }
 
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<TBook>(entity =>
+        {
+            entity.HasKey(e => e.BookId).HasName("PK__t_Book__C223F3B4E152A2C1");
+
+            entity.Property(e => e.BookId).HasDefaultValueSql("(newid())");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
