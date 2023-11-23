@@ -322,7 +322,7 @@ namespace PhoneBookApp.Controllers
                     bool status0 = await BookFullNameAlreadyExistsAsync(output.FirstName, output.LastName);
                     bool status1 = await BookAlPhonereadyExistsAsync(output.PhoneNumber);
 
-                    if (status0 && status1)
+                    if (status0 || status1)
                     {
                         transaction.Rollback();
                         return Conflict("Ups!! Contact Already Exist.");
