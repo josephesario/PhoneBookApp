@@ -309,7 +309,7 @@ namespace PhoneBookApp.Controllers
         /// <returns>
         /// Returns an <see cref="ActionResult{TBook}"/> representing the result of the update operation.
         /// </returns>
-        [HttpPatch("UpdateContactById/{BookId}")]
+        [HttpPut("UpdateContactById/{BookId}")]
         public async Task<ActionResult<TBook>> UpdateContactById([Required] Guid BookId, [FromBody] HBook Book)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
