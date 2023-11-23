@@ -10,6 +10,9 @@ using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace PhoneBookApp.Controllers
 {
+    /// <summary>
+    /// Controller for managing phone books.
+    /// </summary>
     [ApiController]
     [Route("api/[Controller]")]
     public class PhoneBookController : ControllerBase, IBook
@@ -17,11 +20,21 @@ namespace PhoneBookApp.Controllers
 
         private readonly PhoneBookDbContext _dbContext;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PhoneBookController"/> class.
+        /// </summary>
+        /// <param name="dbContext">The database context.</param>
         public PhoneBookController(PhoneBookDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Retrieves all phone books from the database.
+        /// </summary>
+        /// <returns>
+        /// Returns a list of <see cref="TBook"/> representing the phone books.
+        /// </returns>
         [HttpGet("GetAllPhoneBooks")]
         public async Task<ActionResult<TBook>> GetAllPhoneBooks()
         {
@@ -41,14 +54,21 @@ namespace PhoneBookApp.Controllers
                     return NoContent();
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 transaction.Rollback();
-                return BadRequest($"Exeption: Date {DateTime.Now} - Exeption Info - {ex}");
+                return BadRequest($"Exception: Date {DateTime.Now} - Exception Info - {ex}");
             }
         }
 
-       
+
+
+        /// <summary>
+        /// Retrieves phone books by searching for a given last name.
+        /// </summary>
+        /// <param name="search">The last name to search for.</param>
+        /// <returns>Returns a list of <see cref="TBook"/> representing the phone books matching the search criteria.</returns>
         [HttpGet("GetPhoneBookBySearch/{search}")]
         public async Task<ActionResult<TBook>> GetPhoneBookBySearch([Required] string search)
         {
@@ -79,8 +99,13 @@ namespace PhoneBookApp.Controllers
         }
 
 
+        /// <summary>
+        /// Handles the insertion of a new phone book entry.
+        /// </summary>
+        /// <param name="hBook">The phone book entry to add.</param>
+        /// <returns>Returns IActionResult indicating the result of the insertion operation.</returns>
         [HttpPost("AddPhoneBook")]
-        public async Task<IActionResult> AddPhoneBook(HBook hBook)
+        public async Task<IActionResult> AddPhoneBook([FromBody] HBook hBook)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
@@ -143,8 +168,14 @@ namespace PhoneBookApp.Controllers
         }
 
 
+        /// <summary>
+        /// Updates the phone number for a phone book entry by title.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number to update.</param>
+        /// <param name="Title">The new title information.</param>
+        /// <returns>Returns IActionResult indicating the result of the update operation.</returns>
         [HttpPatch("UpdatePhoneNumberBy/{phoneNumber}")]
-        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string phoneNumber , HBookTitle Title)
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy([Required][RegularExpression(@"^\d{10}$")]  string phoneNumber , [FromBody] HBookTitle Title)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
 
@@ -204,9 +235,15 @@ namespace PhoneBookApp.Controllers
         }
 
 
-
+        /// <summary>
+        /// Updates the phone number for a phone book entry by full name.
+        /// </summary>
+        /// <param name="FirstName">The first name of the entry to update.</param>
+        /// <param name="LastName">The last name of the entry to update.</param>
+        /// <param name="Phone">The new phone number information.</param>
+        /// <returns>Returns IActionResult indicating the result of the update operation.</returns>
         [HttpPatch("UpdatePhoneNumberBy/{FirstName}/{LastName}")]
-        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string FirstName,string LastName, HBookPhone Phone)
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy([Required] string FirstName, [Required] string LastName, [FromBody] HBookPhone Phone)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try { 
@@ -262,6 +299,75 @@ namespace PhoneBookApp.Controllers
             }
         }
 
+
+
+        /// <summary>
+        /// Updates a contact by its unique identifier.
+        /// </summary>
+        /// <param name="BookId">The unique identifier of the contact to update.</param>
+        /// <param name="Book">The updated information for the contact.</param>
+        /// <returns>
+        /// Returns an <see cref="ActionResult{TBook}"/> representing the result of the update operation.
+        /// </returns>
+        [HttpPatch("UpdateContactById/{BookId}")]
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy([Required] Guid BookId, [FromBody] HBook Book)
+        {
+            using var transaction = _dbContext.Database.BeginTransaction();
+            try
+            {
+                var output = await _dbContext.TBooks.Where(e => e.BookId.Equals(BookId)).FirstOrDefaultAsync();
+
+                if (output != null)
+                {
+                    bool status0 = await BookFullNameAlreadyExistsAsync(output.FirstName, output.LastName);
+                    bool status1 = await BookAlPhonereadyExistsAsync(output.PhoneNumber);
+
+                    if (status0.Equals(status1))
+                    {
+                        transaction.Rollback();
+                        return Conflict("Ups!! Contact Already Exist.");
+                    }
+                    else
+                    {
+                        output.PhoneNumber = Book.PhoneNumber;
+                        output.FirstName = Book.FirstName;
+                        output.LastName = Book.LastName;
+
+                        var output1 = _dbContext.SaveChanges();
+
+                        if (output1 > 0)
+                        {
+                            transaction.Commit();
+                            return Ok("Updated Successfully");
+                        }
+                        else
+                        {
+                            transaction.Rollback();
+                            return BadRequest("Update Failed");
+                        }
+                    }
+                }
+                else
+                {
+                    transaction.Rollback();
+                    return NoContent();
+                }
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return BadRequest($"Exception: Date {DateTime.Now} - Exception Info - {ex}");
+            }
+        }
+
+
+
+
+        /// <summary>
+        /// Deletes a phone book entry by phone number.
+        /// </summary>
+        /// <param name="phoneNumber">The phone number to delete.</param>
+        /// <returns>Returns IActionResult indicating the result of the deletion operation.</returns>
         [HttpDelete("DeleteByPhoneNumber/{phoneNumber}")]
         public async Task<ActionResult> Delete([Required][RegularExpression(@"^\d{10}$")] string phoneNumber)
         {
@@ -280,6 +386,7 @@ namespace PhoneBookApp.Controllers
                 }
                 else
                 {
+                    transaction.Rollback();
                     return NotFound();
                 }
             }
