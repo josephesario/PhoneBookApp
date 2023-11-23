@@ -18,7 +18,7 @@ go
 CREATE TABLE t_Book
 (
    Book_Id uniqueidentifier primary key default newid(),
-   FistName nvarchar(120) not null,
+   FirstName nvarchar(120) not null,
    LastName nvarchar(120) not null,
    Phone_Number nvarchar(50) unique not null,
    Registration_Date datetime not null,

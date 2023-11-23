@@ -32,10 +32,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Extra.Info\phone_Book_db" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Contracts\Contracts.csproj" />
     <ProjectReference Include="..\Helper\Helper.csproj" />
     <ProjectReference Include="..\Model\dbContext.csproj" />
