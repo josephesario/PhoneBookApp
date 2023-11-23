@@ -57,7 +57,7 @@ namespace PhoneBookApp.Controllers
             try
             {
 
-                var output = await _dbContext.TBooks.Where(e => e.FistName.Contains(search) || e.LastName.Contains(search) || e.PhoneNumber.Contains(search)).ToListAsync();
+                var output = await _dbContext.TBooks.Where(e => e.LastName.Contains(search) ).ToListAsync();
 
                 if (output.Count > 0)
                 {
@@ -94,7 +94,7 @@ namespace PhoneBookApp.Controllers
                     HBook_Validation hBook_Validation = new()
                     {
                         PhoneNumber = hBook.PhoneNumber,
-                        FistName = hBook.FistName,
+                        FirstName = hBook.FirstName,
                         LastName = hBook.LastName
                     };
 
@@ -108,7 +108,7 @@ namespace PhoneBookApp.Controllers
                     {
                         PhoneNumber = hBook.PhoneNumber,
                         RegistrationDate = DateTime.Now,
-                        FistName = hBook.FistName,
+                        FirstName = hBook.FirstName,
                         LastName = hBook.LastName,
 
                     };
@@ -156,7 +156,7 @@ namespace PhoneBookApp.Controllers
                 if (output != null)
                 {
 
-                    bool status0 = await BookFullNameAlreadyExistsAsync(Title.FistName,Title.LastName);
+                    bool status0 = await BookFullNameAlreadyExistsAsync(Title.FirstName,Title.LastName);
                     bool status1 = await BookAlPhonereadyExistsAsync(phoneNumber);
 
                     if (status1)
@@ -173,7 +173,7 @@ namespace PhoneBookApp.Controllers
                         return NotFound();
                     }
 
-                    output.FistName = Title.FistName;
+                    output.FirstName = Title.FirstName;
                     output.LastName = Title.LastName;
 
                     var output1 = _dbContext.SaveChanges();
@@ -205,18 +205,18 @@ namespace PhoneBookApp.Controllers
 
 
 
-        [HttpPatch("UpdatePhoneNumberBy/{FistName}/{LastName}")]
-        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string FistName,string LastName, HBookPhone Phone)
+        [HttpPatch("UpdatePhoneNumberBy/{FirstName}/{LastName}")]
+        public async Task<ActionResult<TBook>> UpdatePhoneNumberBy(string FirstName,string LastName, HBookPhone Phone)
         {
             using var transaction = _dbContext.Database.BeginTransaction();
             try { 
 
-                var output = await _dbContext.TBooks.Where(e=>e.FistName.Equals(FistName) && e.LastName.Equals(LastName)).FirstOrDefaultAsync();
+                var output = await _dbContext.TBooks.Where(e=>e.FirstName.Equals(FirstName) && e.LastName.Equals(LastName)).FirstOrDefaultAsync();
                 
                 if(output != null) {
 
 
-                    bool status0  = await BookFullNameAlreadyExistsAsync(FistName, LastName);
+                    bool status0  = await BookFullNameAlreadyExistsAsync(FirstName, LastName);
                     bool status1 = await BookAlPhonereadyExistsAsync(Phone.PhoneNumber);
 
                     if (status0)
@@ -296,14 +296,14 @@ namespace PhoneBookApp.Controllers
         private async Task<bool> BookAlreadyExistsAsync(HBook_Validation book_Validation)
         {
 
-            var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(book_Validation.FistName) && e.LastName.Equals(book_Validation.LastName) || e.PhoneNumber.Equals(book_Validation.PhoneNumber));
+            var output = await _dbContext.TBooks.AnyAsync(e => e.FirstName.Equals(book_Validation.FirstName) && e.LastName.Equals(book_Validation.LastName) || e.PhoneNumber.Equals(book_Validation.PhoneNumber));
             return output;
         }
 
-        private async Task<bool> BookFullNameAlreadyExistsAsync(string  FistName, string LastName)
+        private async Task<bool> BookFullNameAlreadyExistsAsync(string  FirstName, string LastName)
         {
 
-            var output = await _dbContext.TBooks.AnyAsync(e => e.FistName.Equals(FistName) && e.LastName.Equals(LastName));
+            var output = await _dbContext.TBooks.AnyAsync(e => e.FirstName.Equals(FirstName) && e.LastName.Equals(LastName));
             return output;
         }
 

@@ -8,7 +8,7 @@ public partial class HBookTitle
 
     [Required]
     [StringLength(120)]
-    public string FistName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
     [Required]
     [StringLength(120)]

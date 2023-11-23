@@ -8,7 +8,7 @@ public partial class HBook
 
     [Required]
     [StringLength(120)]
-    public string FistName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
     [Required]
     [StringLength(120)]
@@ -16,6 +16,7 @@ public partial class HBook
 
     [Required]
     [Column("Phone_Number")]
+    [RegularExpression(@"^\d{10}$")]
     [StringLength(50)]
     public string PhoneNumber { get; set; } = null!;
 

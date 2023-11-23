@@ -15,7 +15,7 @@ public partial class TBook
     public Guid BookId { get; set; }
 
     [StringLength(120)]
-    public string FistName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
     [StringLength(120)]
     public string LastName { get; set; } = null!;
