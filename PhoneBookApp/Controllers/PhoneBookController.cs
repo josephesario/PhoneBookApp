@@ -319,8 +319,8 @@ namespace PhoneBookApp.Controllers
 
                 if (output != null)
                 {
-                    bool status0 = await BookFullNameAlreadyExistsAsync(output.FirstName, output.LastName);
-                    bool status1 = await BookAlPhonereadyExistsAsync(output.PhoneNumber);
+                    bool status0 = await BookFullNameAlreadyExistsAsync(Book.FirstName, Book.LastName);
+                    bool status1 = await BookAlPhonereadyExistsAsync(Book.PhoneNumber);
 
                     if (status0 || status1)
                     {
