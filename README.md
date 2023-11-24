@@ -59,7 +59,7 @@ ng build
 
 Otherwise: 
 
-I have excluded cache from version control, follow these additional steps:
+Follow these steps:
 
     Install Dependencies:
     Ensure Node.js and npm are installed. If not, download and install from Node.js official website.
