@@ -1,4 +1,4 @@
-#PhoneBookApp Documentation
+PhoneBookApp Documentation
 
 Welcome to the official documentation for PhoneBookApp, a robust application that seamlessly integrates ASP.NET Core with Angular to streamline your contact management experience.
 Getting Started
