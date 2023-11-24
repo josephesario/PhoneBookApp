@@ -36,7 +36,7 @@ var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
         var writer = XmlWriter.Create(xmlPath);
 
         writer.WriteStartDocument();
-        writer.WriteStartElement("doc");
+        writer.WriteStartElement("doc"); 
         writer.WriteEndElement();
         writer.WriteEndDocument();
 

@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /PhoneBookApp/Extra.Info/Diagrama.png
+/PhoneBookApp/ClientApp/.angular/cache/15.2.7/babel-webpack/ff73d1a6059f1abaff4236476f0693c64959d41c554cbd789af4352f9af6f5ff.json
+/PhoneBookApp/ClientApp/.angular/cache/15.2.7/babel-webpack/fff54512881a10e2389a23346e1f27b046174c49f87bf9972a04c3518eb6f463.json
