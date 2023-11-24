@@ -67,6 +67,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+
 // Database Connection
 var connectionString = builder.Configuration.GetConnectionString("PhoneBookDbContext");
 builder.Services.AddDbContext<PhoneBookDbContext>(options => options.UseSqlServer(connectionString));
@@ -83,6 +85,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseCors(MyAllowSpecificOrigins);
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
