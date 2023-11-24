@@ -1,30 +1,8 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import '@fortawesome/fontawesome-free/css/all.css';
 
-body {
-  background-color: #f8f9fa;
-}
 
-.app-container {
-  max-width: 600px;
-  margin: auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  margin-top: 50px;
-}
-
-.title-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.btn-primary {
-  background-color: #007bff;
-}
-
-.delete-icon {
-  color: #ffffff;
-  background-color: #dc3545;
+.td{
+  font-size: 12px;
+  color: red;
 }

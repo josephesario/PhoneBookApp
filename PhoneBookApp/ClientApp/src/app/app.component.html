@@ -1,6 +1,436 @@
-<body>
-  <app-nav-menu></app-nav-menu>
-  <main class="container">
-    <router-outlet></router-outlet>
-  </main>
-</body>
+<div class="container page-container" style="background-color: #f6f6f6">
+  <div class="px-4 py-0">
+    <div
+      class="justify-content-center row text-center"
+      style="padding-bottom: 50px; padding-top: 20px; margin-top: 5px"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 448 512"
+        class="img-fluid col-md-3"
+        style="width: 45px; height: 55px; padding-right: 0; margin-right: 0"
+      >
+        <path
+          d="M436 160c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h320c26.5 0 48-21.5 48-48v-48h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20zm-228-32c35.3 0 64 28.7 64 64s-28.7 64-64 64-64-28.7-64-64 28.7-64 64-64zm112 236.8c0 10.6-10 19.2-22.4 19.2H118.4C106 384 96 375.4 96 364.8v-19.2c0-31.8 30.1-57.6 67.2-57.6h5c12.3 5.1 25.7 8 39.8 8s27.6-2.9 39.8-8h5c37.1 0 67.2 25.8 67.2 57.6v19.2z"
+        />
+      </svg>
+      <h1 class="col-md-4" style="padding-left: 0; margin-left: 0">
+        Phone Book App
+      </h1>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12">
+        <div class="d-flex justify-content-between">
+          <div>
+            <h2>Contacts</h2>
+          </div>
+          <div>
+            <button
+              class="btn btn-primary"
+              style="padding: 10px 27px"
+              data-bs-toggle="modal"
+              data-bs-target="#formModal"
+              (click)="formApp()"
+            >
+              + Add Contact
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3 mb-4">
+      <div class="col-12">
+        <div class="input-group">
+          <div class="input-group">
+            <i
+              class="fas fa-search input-group-prepend"
+              style="
+                border: 1.5px solid #dfe1e6;
+                border-right: 0;
+                background-color: white;
+                padding: 10px;
+                border-bottom-left-radius: 0.25rem;
+                border-top-left-radius: 0.25rem;
+              "
+            ></i>
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Search for contact by lastname..."
+              style="
+                border-width: 1.5px;
+                border-left: 0 solid #000;
+                margin-left: 0;
+                padding-left: 0;
+              "
+              [(ngModel)]="searchLastName"
+              (input)="updateFilteredContacts()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col-12">
+        <ul class="list-group contact-list" style="border: 1px solid #dee2e6">
+          <li *ngFor="let contact of filteredContacts" class="list-group-item">
+            <div class="d-flex justify-content-between p-3">
+              <div>
+                <h5 class="card-title" style="font-size: 25px">
+                  {{ contact.firstName }} {{ contact.lastName }}
+                </h5>
+                <p class="card-text" style="color: #a7a7a7">
+                  <i class="fas fa-phone fa-xs" style="color: #a7a7a7"></i>
+                  {{ contact.phoneNumber.slice(0, 3) }}-{{
+                    contact.phoneNumber.slice(3, 6)
+                  }}-{{ contact.phoneNumber.slice(6) }}
+                </p>
+              </div>
+              <div class="d-flex align-items-center">
+                <i
+                  class="fas fa-pencil-alt"
+                  style="
+                    color: #3490dc;
+                    font-size: 20px;
+                    cursor: pointer;
+                    margin-right: 20px;
+                  "
+                  (click)="sendId(contact)"
+                  data-bs-target="#updateContactformModal"
+                  data-bs-toggle="modal"
+                ></i>
+
+                <div
+                  class="delete-icon"
+                  (click)="
+                    deleteConf(
+                      contact.phoneNumber,
+                      contact.firstName,
+                      contact.lastName
+                    )
+                  "
+                  data-bs-toggle="modal"
+                  data-bs-target="#deleteConfirmationModal"
+                  style="cursor: pointer"
+                >
+                  <i
+                    class="fa-regular fa-trash-can"
+                    style="
+                      color: #ffffff;
+                      padding: 16px;
+                      background-color: #cb444a;
+                      border-radius: 5px;
+                    "
+                  ></i>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    tabindex="-1"
+    id="formModal"
+    aria-labelledby="formModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formModalLabel">Add Contact</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form
+            *ngIf="cFormAppear"
+            [formGroup]="contactForm"
+            (ngSubmit)="addContact()"
+          >
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                formControlName="firstName"
+                [ngClass]="{
+                  'is-invalid':
+                    contactForm.get('firstName')?.invalid &&
+                    contactForm.get('firstName')?.touched
+                }"
+                autocomplete="Firstname"
+                required
+              />
+
+              <div
+                *ngIf="
+                  contactForm.get('firstName')?.touched &&
+                  contactForm.get('firstName')!.hasError('required')
+                "
+                class="td"
+              >
+                Please enter first name of contact.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                formControlName="lastName"
+                [ngClass]="{
+                  'is-invalid':
+                    contactForm.get('lastName')?.invalid &&
+                    contactForm.get('lastName')!.touched
+                }"
+                required
+                autocomplete="Lastname"
+               
+              />
+
+              <div
+                *ngIf="
+                  contactForm.get('lastName')?.touched &&
+                  contactForm.get('lastName')!.hasError('required')
+                "
+                class="td"
+              >
+                Please enter last name of contact.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input
+                type="text"
+                class="form-control"
+                id="phoneNumber"
+                formControlName="phoneNumber"
+                required
+                [ngClass]="{
+                  'is-invalid':
+                    contactForm.get('phoneNumber')?.invalid &&
+                    contactForm.get('phoneNumber')?.touched
+                }"
+              />
+
+              <div
+                *ngIf="
+                  contactForm.get('phoneNumber')?.touched &&
+                  contactForm.get('phoneNumber')?.hasError('required')
+                "
+                class="td"
+              >
+                Please enter phone number of supplier.
+              </div>
+
+              <div
+                *ngIf="
+                  contactForm.get('phoneNumber')?.touched &&
+                  contactForm.get('phoneNumber')?.hasError('maxlength')
+                "
+                class="td"
+              >
+                Phone number cant be more than 10 digits.
+              </div>
+
+              <div
+                *ngIf="
+                  contactForm.get('phoneNumber')?.touched &&
+                  contactForm.get('phoneNumber')?.hasError('minlength')
+                "
+                class="td"
+              >
+                Please enter a valid 10 digit phone number.
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary mt-2"
+              [disabled]="!contactForm.valid"
+            >
+              Save Contact
+            </button>
+          </form>
+
+          <div *ngIf="succAppear" class="row">
+            <h2>Contact Added Successfully</h2>
+            <button
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              (click)="succDisappear()"
+            >
+              OK
+            </button>
+          </div>
+          <div *ngIf="errStat" class="row">
+            <h2>Contact Already Exists</h2>
+            <button class="btn btn-secondary" (click)="makeChanges()">
+              {{ errMessage }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="deleteConfirmationModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirm Delete</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>{{ deleteMessage }}</p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            {{ cOK }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            *ngIf="deleteAppear"
+            (click)="deleteContact(numberDelete)"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    tabindex="-1"
+    id="updateContactformModal"
+    aria-labelledby="updateContactformModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="updateContactformModalLabel">
+            Add Contact
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- app.component.html -->
+
+          <form #updateContactForm="ngForm" (ngSubmit)="updateForm()">
+            <div class="form-group">
+              <label for="firstName">First Name</label>
+              <input
+                [(ngModel)]="modelFirstName"
+                name="firstName"
+                type="text"
+                class="form-control"
+                id="firstName"
+                #firstName="ngModel"
+                ngModel
+                required
+              />
+              <div *ngIf="firstName?.touched && firstName?.invalid" class="td">
+                Please enter the first name of the contact.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="lastName">Last Name</label>
+              <input
+                [(ngModel)]="modelLastName"
+                name="lastName"
+                type="text"
+                class="form-control"
+                id="lastName"
+                #lastName="ngModel"
+                ngModel
+                required
+              />
+              <div *ngIf="lastName?.touched && lastName?.invalid" class="td">
+                Please enter the last name of the contact.
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number</label>
+              <input
+                [(ngModel)]="modelPhoneNumber"
+                name="phoneNumber"
+                type="text"
+                class="form-control"
+                id="phoneNumber"
+                #phoneNumber="ngModel"
+                ngModel
+                required
+                minlength="10"
+                maxlength="10"
+              />
+              <div
+                *ngIf="
+                  phoneNumber?.touched &&
+                  phoneNumber?.invalid &&
+                  (phoneNumber?.errors)!.required
+                "
+                class="td"
+              >
+                Please enter the phone number of the contact.
+              </div>
+              <div
+                *ngIf="phoneNumber?.touched && phoneNumber?.errors?.minlength"
+                class="td"
+              >
+                Please enter a valid 10-digit phone number.
+              </div>
+              <div
+                *ngIf="phoneNumber?.touched && phoneNumber?.errors?.maxlength"
+                class="td"
+              >
+                Phone number can't be more than 10 digits.
+              </div>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-primary mt-2"
+              [disabled]="!updateContactForm.valid"
+            >
+              Update Contact
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

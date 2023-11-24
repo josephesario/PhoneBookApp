@@ -1,0 +1,351 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+      "title": "PhoneBookApp",
+      "version": "1.0"
+    },
+    "paths": {
+      "/api/PhoneBook/GetAllPhoneBooks": {
+        "get": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/PhoneBook/GetPhoneBookBySearch/{search}": {
+        "get": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "parameters": [
+            {
+              "name": "search",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/PhoneBook/AddPhoneBook": {
+        "post": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBook"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBook"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBook"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      },
+      "/api/PhoneBook/UpdatePhoneNumberBy/{phoneNumber}": {
+        "patch": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "parameters": [
+            {
+              "name": "phoneNumber",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookTitle"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookTitle"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookTitle"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/PhoneBook/UpdatePhoneNumberBy/{FistName}/{LastName}": {
+        "patch": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "parameters": [
+            {
+              "name": "FistName",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            },
+            {
+              "name": "LastName",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookPhone"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookPhone"
+                }
+              },
+              "application/*+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HBookPhone"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success",
+              "content": {
+                "text/plain": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                },
+                "text/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TBook"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/api/PhoneBook/DeleteByPhoneNumber/{phoneNumber}": {
+        "delete": {
+          "tags": [
+            "PhoneBook"
+          ],
+          "parameters": [
+            {
+              "name": "phoneNumber",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "pattern": "^\\d{10}$",
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "HBook": {
+          "required": [
+            "fistName",
+            "lastName",
+            "phoneNumber"
+          ],
+          "type": "object",
+          "properties": {
+            "fistName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string"
+            },
+            "phoneNumber": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "HBookPhone": {
+          "required": [
+            "phoneNumber"
+          ],
+          "type": "object",
+          "properties": {
+            "phoneNumber": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "HBookTitle": {
+          "required": [
+            "fistName",
+            "lastName"
+          ],
+          "type": "object",
+          "properties": {
+            "fistName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string"
+            },
+            "lastName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "TBook": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "fistName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string",
+              "nullable": true
+            },
+            "lastName": {
+              "maxLength": 120,
+              "minLength": 0,
+              "type": "string",
+              "nullable": true
+            },
+            "phoneNumber": {
+              "maxLength": 50,
+              "minLength": 0,
+              "type": "string",
+              "nullable": true
+            },
+            "registrationDate": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  }
