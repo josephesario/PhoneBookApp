@@ -45,6 +45,7 @@ Building and Running the Project
 
     Build the project using Visual Studio 2022.
     Run the project to start the application.
+    For the Api you can view the doc here localhost:7171/swagger
 
 Note: If you encounter any issues during setup, ensure that you have met all the prerequisites and correctly configured the connection string.
 Exploring the Project
