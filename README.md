@@ -36,7 +36,7 @@ Allowed Origins:
   
     After lunching the project get the Localhost provided for the angular. and add it or include it in to the appsetting.js file.
     
-"AllowedOrigins": [ "https://localhost:44460/" ]
+"AllowedOrigins": [ "https://localhost:44460" ]
 
 Project Structure
 
