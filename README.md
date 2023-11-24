@@ -45,12 +45,45 @@ Building and Running the Project
 
     Build the project using Visual Studio 2022.
     Run the project to start the application.
-    For the Api you can view the doc here localhost:7171/swagger
+
+For API documentation, you can view it here.
 
 Note: If you encounter any issues during setup, ensure that you have met all the prerequisites and correctly configured the connection string.
-Exploring the Project
+Rebuilding Angular Project and Cache
 
-Feel free to explore the API endpoints in the Controllers folder and the Angular front-end in the ClientApp folder.
+I have Sclude cache from version control, follow these additional steps:
+
+    Install Dependencies:
+    Ensure Node.js and npm are installed. If not, download and install from Node.js official website.
+
+    Navigate to Angular Project:
+    Open a terminal and navigate to the root directory of your Angular project.
+
+    Install Angular CLI:
+    Run the following command to install the Angular CLI globally:
+
+    bash
+
+npm install -g @angular/cli
+
+Install Project Dependencies:
+Inside the Angular project directory, run:
+
+bash
+
+npm install
+
+Rebuild the Project:
+After installing dependencies, rebuild the Angular project:
+
+bash
+
+ng build
+
+
+By following these steps, you rebuild the Angular project, include the cache files.
+
+Feel free to reach out if you have any questions or encounter challenges.
 
 Done With Test, GetINNOtized.
 
