@@ -51,7 +51,15 @@ For API documentation, you can view it here.
 Note: If you encounter any issues during setup, ensure that you have met all the prerequisites and correctly configured the connection string.
 Rebuilding Angular Project and Cache
 
-I have Sclude cache from version control, follow these additional steps:
+If you already have node.js in your computer and angular escape next and only run this:
+
+bash
+
+ng build
+
+Otherwise: 
+
+I have excluded cache from version control, follow these additional steps:
 
     Install Dependencies:
     Ensure Node.js and npm are installed. If not, download and install from Node.js official website.
@@ -77,7 +85,6 @@ Rebuild the Project:
 After installing dependencies, rebuild the Angular project:
 
 bash
-
 ng build
 
 
